@@ -1,56 +1,60 @@
 #include<iostream>
-#include<queue>
 using namespace std;
 
 class node{
 public:
-	int data;
+	int key;
 	node* left;
 	node* right;
 
-	node(int d){
-		this->data = d;
+	node(int key){
+		this->key = key;
 		this->left = NULL;
 		this->right = NULL;
 	}
 };
-
-queue<node*> visited_nodes;
-
-
-void levelOrder(node* root){
-	if(root == NULL) return;
-
-	visited_nodes.push(root);
-	visited_nodes.push(NULL);
-
-	while(!visited_nodes.empty()){
-		node* temp = visited_nodes.front();
-		visited_nodes.pop();
-		if(temp==NULL && !visited_nodes.empty()) visited_nodes.push(NULL);
-		
-		if(temp!=NULL) {cout<<temp->data<<" ";
-				if(temp->left) visited_nodes.push(temp->left);
-				if(temp->right) visited_nodes.push(temp->right);
-			}
-		else cout<<"\n";
+ 
+//building a bst
+node* insert(node* root, int key){
+	if(root == NULL) {
+		root = new node(key);
+		return root;
 	}
+	if(key<=root->key){
+		root->left= insert(root->left, key);
+	}
+	else
+		root->right = insert(root->right, key);
+	return root; 
 }
 
-node* buildTree(){
-	int d;
-	cin>>d;
+void printInOrder(node* root){
+	if(root==NULL) return;
 
-	if(d==-1) return NULL;
+	printInOrder(root->left);
+	cout<<root->key<<" ";
+	printInOrder(root->right);
+}
 
-	node* n = new node(d);
-	n->left = buildTree();
-	n->right = buildTree();
+bool search(node* root, int key){
+	if(root == NULL) return 0;
+	if(root->key == key) return 1;
 
-	return n;
+	if(key < root->key) return search(root->left,key);
+	return search(root->right,key);
 }
 
 int main(){
-	node* root = buildTree();
-	levelOrder(root);
+	node* root=NULL;
+	int a[] = {8,3,10,1,6,14,4,7,13};
+
+	for(int x:a){
+		root = insert(root,x);
+	}
+	printInOrder(root);
+
+	cout<<"\n";
+
+	cout<<search(root, 13);
+
 }
