@@ -199,6 +199,39 @@ maxSumPair maxSumOfTree(node* root){
 	return p;
 }
 
+class LL{
+public:
+	node* head;
+	node* tail;
+};
+
+LL flattingATree(node* root){
+	LL headTail;
+	if(root==NULL) {
+		headTail.head = NULL;
+		headTail.tail = NULL;
+		return headTail;
+	}
+	LL Left = flattingATree(root->left);
+	LL Right = flattingATree(root->right);
+
+	if(Left.tail!=NULL){
+		Left.tail->right = root;
+		headTail.head = Left.head;
+	}else {
+		headTail.head = root;
+	}
+
+	if(Right.head!=NULL){
+		root->right = Right.head;
+		headTail.tail = Right.tail;
+	}else {
+		headTail.tail = root;
+	}
+
+	return headTail;
+}
+
 int main(){
 	// node* root = buildTree();
 	// levelOrder(root);
@@ -221,5 +254,13 @@ int main(){
 	// maxSumPair maxSum = maxSumOfTree(root);
 	// cout<<"MAX SUM IS :-: "<< max(maxSum.inc,maxSum.exc);
 
-	PrintAtLevelK(root,2);
+	// PrintAtLevelK(root,2);
+
+	LL l = flattingATree(root);
+	node* head = l.head;
+	while(head!=NULL){
+		cout<<head->data<<"-->";
+		head = head->right;
+	}
+	cout<<"\n";
 }
